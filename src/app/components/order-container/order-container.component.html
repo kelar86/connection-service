@@ -1,0 +1,85 @@
+<clr-wizard #wizard [(clrWizardOpen)]='wizardState'>
+    <clr-wizard-button [type]="'cancel'">Дорочно завершить заявку</clr-wizard-button>
+    <clr-wizard-button [type]="'previous'">Назад</clr-wizard-button>
+    <clr-wizard-button [type]="'next'">Вперед</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'">Отправить заявку</clr-wizard-button>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="name.pristine || !formPageOne.valid">
+        <ng-template clrPageTitle>Личная информация</ng-template>
+        <form #formPageOne="ngForm">
+            <section class="form-block">
+                <label>Введите информацию о клиенте:</label>
+                <div class="form-group">
+                    <label>Имя</label>
+                    <label for="nameInput" aria-haspopup="true" role="tooltip"
+                        [class.invalid]="name.touched && !name.valid"
+                        class="tooltip tooltip-validation tooltip-md tooltip-bottom-right">
+                        <input type="text" id="nameInput" required [(ngModel)]="model.name" name="name" #name="ngModel">
+                        <span class="tooltip-content">This field cannot be empty!</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="adress">Адрес</label>
+                    <input type="text" id="adress" [(ngModel)]="model.adress" name="adress">
+                </div>
+            </section>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="number.pristine || !formPageTwo.valid">
+        <ng-template clrPageTitle>Подключение услуг</ng-template> <!-- mandatory -->
+        <ng-template clrPageNavTitle>
+            Выберите услуги и пакеты
+        </ng-template> <!-- optional -->
+        <form #formPageTwo="ngForm">
+            <section class="form-block">
+                <label>Please your lucky number!</label>
+                <div class="form-group">
+                    <label>Your number</label>
+                    <label for="numberInput" aria-haspopup="true" role="tooltip"
+                        [class.invalid]="number.touched && !number.valid"
+                        class="tooltip tooltip-validation tooltip-md tooltip-bottom-right">
+                        <input type="number" id="numberInput" required [(ngModel)]="model.number" name="number"
+                            #number="ngModel">
+                        <span class="tooltip-content">
+                            This field cannot be empty!
+                        </span>
+                    </label>
+                </div>
+            </section>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="!formPageOne.valid || !formPageTwo.valid">
+        <ng-template clrPageTitle>Заявка на подключение</ng-template> <!-- mandatory -->
+        <ng-template clrPageNavTitle>
+            Сохранение заявки
+        </ng-template> 
+
+        <div *ngIf="formPageOne.valid && formPageTwo.valid">
+            <p>Congratulations! You are done with this wizard.</p>
+            <form class="compact">
+                <label>Your information</label>
+                <section class="form-block">
+                    <div class="form-group">
+                        <label>Your name:</label>
+                        <span>{{ this.model.name }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Your favorite food:</label>
+                        <span>{{ this.model.favorite }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Your lucky number:</label>
+                        <span>{{ this.model.number }}</span>
+                    </div>
+                </section>
+            </form>
+        </div>
+
+        <div *ngIf="!formPageOne.valid || !formPageTwo.valid">
+            <p>Not quite there yet.</p>
+        </div>
+
+    </clr-wizard-page>
+</clr-wizard>
