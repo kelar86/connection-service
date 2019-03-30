@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ClrWizard } from '@clr/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-container',
@@ -19,7 +20,7 @@ export class OrderContainerComponent implements OnInit {
     number: ""
   };
 
-  constructor() { }
+  constructor(private router: Router) { }
 
 
   ngOnInit() {
@@ -29,7 +30,9 @@ export class OrderContainerComponent implements OnInit {
 
   doCancel(): void {
     console.log('CANCEL!!');
+   
     this.wizard.close();
+    this.router.navigateByUrl('/cancel');
   }
  
 
