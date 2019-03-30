@@ -4,7 +4,9 @@
     <clr-wizard-button [type]="'next'">Вперед</clr-wizard-button>
     <clr-wizard-button [type]="'finish'">Отправить заявку</clr-wizard-button>
 
-    <clr-wizard-page [clrWizardPageNextDisabled]="name.pristine || !formPageOne.valid">
+    <clr-wizard-page 
+    [clrWizardPageNextDisabled]="name.pristine || !formPageOne.valid"
+    (clrWizardPageOnCancel)="doCancel()">
         <ng-template clrPageTitle>Личная информация</ng-template>
         <form #formPageOne="ngForm">
             <section class="form-block">

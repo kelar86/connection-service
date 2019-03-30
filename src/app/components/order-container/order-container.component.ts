@@ -27,7 +27,10 @@ export class OrderContainerComponent implements OnInit {
   }
 
 
-
+  doCancel(): void {
+    console.log('CANCEL!!');
+    this.wizard.close();
+  }
  
 
 }

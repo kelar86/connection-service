@@ -10,13 +10,15 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { OrderContainerComponent } from './components/order-container/order-container.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderListComponent } from './components/order-list/order-list.component';
+import { CancelSummaryComponent } from './components/cancel-summary/cancel-summary.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     OrderContainerComponent,
-    OrderListComponent
+    OrderListComponent,
+    CancelSummaryComponent
   ],
   imports: [
     BrowserModule,
