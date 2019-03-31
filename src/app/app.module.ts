@@ -11,6 +11,8 @@ import { OrderContainerComponent } from './components/order-container/order-cont
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { CancelSummaryComponent } from './components/cancel-summary/cancel-summary.component';
+import { TextMaskModule } from 'angular2-text-mask';
+
 
 @NgModule({
   declarations: [
@@ -23,6 +25,7 @@ import { CancelSummaryComponent } from './components/cancel-summary/cancel-summa
   imports: [
     BrowserModule,
     FormsModule,
+    TextMaskModule,
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,

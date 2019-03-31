@@ -1,87 +1,159 @@
 <clr-wizard #wizard [(clrWizardOpen)]='wizardState'>
-    <clr-wizard-button [type]="'cancel'">Дорочно завершить заявку</clr-wizard-button>
+
+    <clr-wizard-button 
+        class="my-custom-button clr-wizard-btn-wrapper ng-star-inserted btn-warning-outline" 
+        ng-reflect-type="custom-previous" 
+        (click)="doCancel()">Досрочно завершить заявку</clr-wizard-button>
     <clr-wizard-button [type]="'previous'">Назад</clr-wizard-button>
     <clr-wizard-button [type]="'next'">Вперед</clr-wizard-button>
-    <clr-wizard-button [type]="'finish'">Отправить заявку</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'" (click)="doFinish()">Отправить заявку</clr-wizard-button>
 
     <clr-wizard-page 
-    [clrWizardPageNextDisabled]="name.pristine || !formPageOne.valid"
+    [clrWizardPageNextDisabled]="!clientInfoForm.valid"
     (clrWizardPageOnCancel)="doCancel()">
         <ng-template clrPageTitle>Личная информация</ng-template>
-        <form #formPageOne="ngForm">
+        <form [formGroup]="clientInfoForm">
             <section class="form-block">
                 <label>Введите информацию о клиенте:</label>
+               
+                <!-- CITY -->
                 <div class="form-group">
-                    <label>Имя</label>
-                    <label for="nameInput" aria-haspopup="true" role="tooltip"
-                        [class.invalid]="name.touched && !name.valid"
-                        class="tooltip tooltip-validation tooltip-md tooltip-bottom-right">
-                        <input type="text" id="nameInput" required [(ngModel)]="model.name" name="name" #name="ngModel">
-                        <span class="tooltip-content">This field cannot be empty!</span>
-                    </label>
+                     <label for="city" class="required">Город:</label>
+                    <div class="select">
+                        <select id="city" formControlName="city">
+                            <option *ngFor="let city of CITIES" [value]="city">{{city}}</option>
+                        </select>
+                    </div>  
                 </div>
+                    
+                <!-- NAME -->
                 <div class="form-group">
-                    <label for="adress">Адрес</label>
-                    <input type="text" id="adress" [(ngModel)]="model.adress" name="adress">
+                    <label for="nameInput" class="required">Имя</label>
+                        <input type="text" id="nameInput" formControlName="name" name="name">
                 </div>
+
+                <!-- ADRESS -->
+                <div class="form-group">
+                    <label for="adress" class="required">Адрес</label>
+                    <input type="text" id="adress" formControlName="adress" name="adress">
+                </div>
+
+                <!-- PHONE -->
+                <div class="form-group">
+                    <label for="tel" class="required" >Контактный телефон</label>
+                    <input type="tel" [textMask]="{mask: telMask}" id="tel" placeholder="(___) ___-__-__" formControlName="phoneNumber" >
+                </div>
+
+                <!-- EXTRA PHONE -->
+                <div class="form-group">
+                    <label for="tel2" >Дополнительный телефон</label>
+                    <input type="tel" [textMask]="{mask: telMask}" id="tel2" placeholder="(___) ___-__-__" formControlName="extraPhoneNumber">
+                </div>
+
+                <!-- CALL REASON -->
+                <div class="form-group">
+                    <label for="reason" class="required">Причина обращения:</label>
+                    <div class="select">
+                        <select id="reason" formControlName="callReason">
+                            <option *ngFor="let reason of REASONS" [value]="reason.value">{{reason.label}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- EXTRA CALL COMMENT -->
+                <div class="form-group">
+                    <label for="comment">Комментарий</label>
+                    <textarea id="comment" rows="5" formControlName="callReasonComment"></textarea>
+                </div>
+
             </section>
         </form>
     </clr-wizard-page>
 
-    <clr-wizard-page [clrWizardPageNextDisabled]="number.pristine || !formPageTwo.valid">
-        <ng-template clrPageTitle>Подключение услуг</ng-template> <!-- mandatory -->
+    <clr-wizard-page [clrWizardPageNextDisabled]="!selectedOffer">
+        <ng-template clrPageTitle>Подключение услуг</ng-template> 
         <ng-template clrPageNavTitle>
-            Выберите услуги и пакеты
-        </ng-template> <!-- optional -->
-        <form #formPageTwo="ngForm">
-            <section class="form-block">
-                <label>Please your lucky number!</label>
-                <div class="form-group">
-                    <label>Your number</label>
-                    <label for="numberInput" aria-haspopup="true" role="tooltip"
-                        [class.invalid]="number.touched && !number.valid"
-                        class="tooltip tooltip-validation tooltip-md tooltip-bottom-right">
-                        <input type="number" id="numberInput" required [(ngModel)]="model.number" name="number"
-                            #number="ngModel">
-                        <span class="tooltip-content">
-                            This field cannot be empty!
-                        </span>
-                    </label>
+            Выберите пакет услуг
+        </ng-template> 
+        
+        <div class="clr-row">
+            <div class="clr-col" *ngFor="let offer of offers; let i = index">
+                <div class="card"  
+                [ngStyle]="selectedStyle(i)" >
+                    <div class="card-header">
+                        {{offer.tariffPlan}}
+                    </div>
+                    <div class="card-block">
+                      <div *ngFor="let package of offer.packages">
+                          <p><strong>"{{package.name}}"</strong></p> 
+                          <ul>
+                              <li *ngFor="let service of package.services">{{service.name}} </li>
+                          </ul>   
+                          <p>Тариф: {{package.price()}}</p>      
+                      </div>
+                     
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm" (click)="selectOffer($event, offer, i)" >Подключить</button>
+                    </div>
                 </div>
-            </section>
-        </form>
+            </div>
+        </div>
     </clr-wizard-page>
 
-    <clr-wizard-page [clrWizardPageNextDisabled]="!formPageOne.valid || !formPageTwo.valid">
+    <clr-wizard-page >
         <ng-template clrPageTitle>Заявка на подключение</ng-template> <!-- mandatory -->
         <ng-template clrPageNavTitle>
             Сохранение заявки
         </ng-template> 
 
-        <div *ngIf="formPageOne.valid && formPageTwo.valid">
-            <p>Congratulations! You are done with this wizard.</p>
+        <div>
+            
             <form class="compact">
-                <label>Your information</label>
+            <div>
+                <label>Информация о клиенте</label>
                 <section class="form-block">
                     <div class="form-group">
-                        <label>Your name:</label>
-                        <span>{{ this.model.name }}</span>
+                        <label>Город</label>
+                        <span>{{ clientInfoForm.get('city').value }}</span>
                     </div>
                     <div class="form-group">
-                        <label>Your favorite food:</label>
-                        <span>{{ this.model.favorite }}</span>
+                        <label>Имя</label>
+                        <span>{{ clientInfoForm.get('name').value }}</span>
                     </div>
                     <div class="form-group">
-                        <label>Your lucky number:</label>
-                        <span>{{ this.model.number }}</span>
+                        <label>Адрес</label>
+                        <span>{{ clientInfoForm.get('adress').value }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон</label>
+                        <span>{{ clientInfoForm.get('phoneNumber').value }}</span>
                     </div>
                 </section>
+            
+            </div>
+            <div>
+                <label>Подключены услуги</label>
+                <section class="form-block">
+                    <div class="form-group">
+                        <label>Тарифный план</label>
+                        <span>{{ selectedOffer?.tariffPlan }}</span>
+                    </div>
+
+                    <div *ngFor="let package of selectedOffer?.packages">
+                        <p><strong>"{{package.name}}"</strong></p>
+                        <ul>
+                            <li *ngFor="let service of package.services">{{service.name}} </li>
+                        </ul>
+                        <p>Тариф: {{package.price()}}</p>
+                    </div>
+                </section>
+            
+            </div>
             </form>
         </div>
 
-        <div *ngIf="!formPageOne.valid || !formPageTwo.valid">
-            <p>Not quite there yet.</p>
-        </div>
+
 
     </clr-wizard-page>
 </clr-wizard>

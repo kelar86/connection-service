@@ -15,7 +15,7 @@ import { Component } from '@angular/core';
       <nav class="sidenav">
           <section class="sidenav-content">
             <a routerLink="/" class="nav-link" >Входящий звонок</a>
-            <a routerLink="/orders" class="nav-link" >Список заявок</a>
+            <a routerLink="/orders" class="nav-link" >Принятые звонки</a>
           </section>
       </nav>
       <div class="content-area">
